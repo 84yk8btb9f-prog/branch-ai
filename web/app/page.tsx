@@ -1,15 +1,18 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { motion } from 'motion/react';
-import { Copy, Check, Terminal, GitFork, GitCompare, ChevronRight } from 'lucide-react';
+import { motion, MotionConfig } from 'motion/react';
+import { Copy, Check, Terminal, GitFork, GitCompare, ArrowUpRight } from 'lucide-react';
 
 const MONO = 'var(--font-geist-mono), monospace';
-const DISPLAY = 'var(--font-sora), sans-serif';
+const DISPLAY = 'var(--font-geist-sans), sans-serif';
 
-/* ── Palette ── Sky → Cyan on blue-tinted near-black. Unique to Branch. */
-const A = '#38BDF8'; // sky
-const A2 = '#22D3EE'; // cyan
+/* Accent — interaction only (primary CTA, links, active states). */
+const ACCENT = '#006bff';
+
+const DEMO_URL = 'https://branchai-fawn.vercel.app';
+const GITHUB_URL = 'https://github.com/nikolas-sapa/branch-ai';
+const NPM_URL = 'https://www.npmjs.com/package/branch-ai';
 
 function fallbackCopy(text: string) {
   const el = document.createElement('textarea');
@@ -35,33 +38,25 @@ function Backdrop() {
           WebkitMaskImage: 'radial-gradient(ellipse 78% 55% at 50% 0%, #000 25%, transparent 78%)',
         }}
       />
-      <div
-        className="absolute -top-44 left-1/4 h-[560px] w-[760px] rounded-full blur-[150px] opacity-50"
-        style={{ background: `radial-gradient(ellipse, ${A}33, ${A2}1a 45%, transparent 70%)` }}
-      />
     </div>
   );
 }
 
-function BlurIn({ text, className, accentFrom }: { text: string; className?: string; accentFrom?: number }) {
+function BlurIn({ text, className }: { text: string; className?: string }) {
   const words = text.split(' ');
   return (
     <h1 className={className} style={{ fontFamily: DISPLAY }}>
-      {words.map((w, i) => {
-        const accent = accentFrom !== undefined && i >= accentFrom;
-        return (
-          <motion.span
-            key={i}
-            initial={{ opacity: 0, filter: 'blur(8px)', y: 12 }}
-            animate={{ opacity: 1, filter: 'blur(0px)', y: 0 }}
-            transition={{ duration: 0.5, delay: i * 0.06, ease: [0.22, 1, 0.36, 1] }}
-            className="mr-[0.26em] inline-block"
-            style={accent ? { background: `linear-gradient(135deg, ${A}, ${A2})`, WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' } : undefined}
-          >
-            {w}
-          </motion.span>
-        );
-      })}
+      {words.map((w, i) => (
+        <motion.span
+          key={i}
+          initial={{ opacity: 0, filter: 'blur(8px)', y: 12 }}
+          animate={{ opacity: 1, filter: 'blur(0px)', y: 0 }}
+          transition={{ duration: 0.5, delay: i * 0.06, ease: [0.22, 1, 0.36, 1] }}
+          className="mr-[0.26em] inline-block"
+        >
+          {w}
+        </motion.span>
+      ))}
     </h1>
   );
 }
@@ -87,14 +82,36 @@ function CopyBtn({ text }: { text: string }) {
   return (
     <button
       onClick={copy}
-      style={{ fontFamily: MONO, color: copied ? A : undefined }}
-      className="border border-white/10 rounded px-2 py-1 text-[11px] cursor-pointer transition-all tracking-[0.04em] text-white/45 hover:text-white hover:border-white/25 flex items-center gap-1.5"
+      style={{ fontFamily: MONO, color: copied ? ACCENT : undefined }}
+      className="border border-[#2e2e2e] rounded-[6px] px-2 py-1 text-[11px] cursor-pointer transition-all tracking-[0.04em] text-[#8f8f8f] hover:text-[#ededed] hover:border-[#4d4d4d] flex items-center gap-1.5"
     >
       {copied ? <Check size={12} /> : <Copy size={12} />}
       {copied ? 'copied' : 'copy'}
     </button>
   );
 }
+
+function DemoButton({ children = 'View live demo' }: { children?: string }) {
+  return (
+    <a
+      href={DEMO_URL}
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{ fontFamily: DISPLAY }}
+      className="inline-flex items-center gap-2 rounded-[6px] px-5 py-3 text-[14px] font-semibold text-white bg-[#006bff] hover:bg-[#0059d1] transition-colors"
+    >
+      {children}
+      <ArrowUpRight size={15} />
+    </a>
+  );
+}
+
+/* Proof strip — real, verified badges only (npm package + public repo exist). */
+const BADGES = [
+  { href: NPM_URL, src: 'https://img.shields.io/npm/v/branch-ai?style=flat-square&labelColor=171717&color=4d4d4d', alt: 'branch-ai version on npm' },
+  { href: NPM_URL, src: 'https://img.shields.io/npm/dm/branch-ai?style=flat-square&labelColor=171717&color=4d4d4d', alt: 'branch-ai monthly downloads on npm' },
+  { href: GITHUB_URL, src: 'https://img.shields.io/github/stars/nikolas-sapa/branch-ai?style=flat-square&labelColor=171717&color=4d4d4d', alt: 'GitHub stars for nikolas-sapa/branch-ai' },
+];
 
 const FEATURES = [
   { num: '01', name: 'Navigate', icon: Terminal, desc: 'Every reasoning step is a node. Click any point in the tree to inspect, copy, or continue from there.' },
@@ -111,26 +128,36 @@ const WAYS = [
 ];
 
 const TERMINAL_LINES = [
-  [{ text: 'npm', color: A }, { text: ' install -g branch-ai', color: '#9FB4C2' }],
-  [{ text: 'branch', color: A }, { text: ' "explain why this query is slow"', color: '#9FB4C2' }],
-  [{ text: 'branch', color: A }, { text: ' doctor', color: '#9FB4C2' }, { text: '  # check which CLIs are available', color: '#4A5560' }],
+  [{ text: 'npm', color: '#ededed' }, { text: ' install -g branch-ai', color: '#a8a8a8' }],
+  [{ text: 'branch', color: '#ededed' }, { text: ' "explain why this query is slow"', color: '#a8a8a8' }],
+  [{ text: 'branch', color: '#ededed' }, { text: ' doctor', color: '#a8a8a8' }, { text: '  # check which CLIs are available', color: '#7d7d7d' }],
 ];
+
+function InstallSnippet() {
+  return (
+    <div className="flex items-center gap-3 bg-[#171717] border border-[#2e2e2e] rounded-[6px] px-4 py-3 transition-colors hover:border-[#4d4d4d]">
+      <code style={{ fontFamily: MONO }} className="text-[14px] text-[#ededed] tracking-[-0.01em]">npm install -g branch-ai</code>
+      <CopyBtn text="npm install -g branch-ai" />
+    </div>
+  );
+}
 
 export default function BranchAILanding() {
   return (
-    <div className="relative min-h-screen bg-[#0A0F14] text-[#E6EDF3] antialiased selection:bg-[#38BDF8]/30 selection:text-white">
+    <MotionConfig reducedMotion="user">
+    <div className="relative min-h-screen bg-[#0a0a0a] text-[#ededed] antialiased selection:bg-[#006bff]/30 selection:text-white">
       <Backdrop />
 
       {/* Nav */}
-      <nav className="sticky top-0 z-[100] border-b border-white/[0.06] px-8 py-4 flex items-center justify-between bg-[#0A0F14]/70 backdrop-blur-xl">
-        <div style={{ fontFamily: MONO }} className="text-[14px] font-semibold tracking-[-0.02em]">
-          <span style={{ background: `linear-gradient(135deg, ${A}, ${A2})`, WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' }}>branch</span> ai
+      <nav className="sticky top-0 z-[100] border-b border-[#2e2e2e]/60 px-8 py-4 flex items-center justify-between bg-[#0a0a0a]/70 backdrop-blur-xl">
+        <div style={{ fontFamily: MONO }} className="text-[14px] font-semibold tracking-[-0.02em] text-[#ededed]">
+          branch ai
         </div>
         <ul className="flex gap-7 list-none">
-          {([['#problem', 'problem'], ['#features', 'features'], ['#install', 'install'], ['https://github.com/nikolas-sapa/branch-ai', 'github ↗']] as const).map(
+          {([['#problem', 'problem'], ['#features', 'features'], ['#install', 'install'], [GITHUB_URL, 'github ↗']] as const).map(
             ([href, label]) => (
               <li key={href}>
-                <a href={href} style={{ fontFamily: MONO }} className="text-[12px] text-white/45 hover:text-white transition-colors tracking-[0.03em]">{label}</a>
+                <a href={href} style={{ fontFamily: MONO }} className="text-[12px] text-[#8f8f8f] hover:text-[#ededed] transition-colors tracking-[0.03em]">{label}</a>
               </li>
             )
           )}
@@ -139,69 +166,74 @@ export default function BranchAILanding() {
 
       {/* Hero */}
       <section className="py-[104px] max-w-[920px] mx-auto px-8">
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="inline-flex items-center gap-2 rounded-full border border-white/[0.10] bg-white/[0.04] pl-3 pr-2 py-1 text-[11px] font-mono tracking-[0.12em] uppercase text-white/55 mb-7" style={{ fontFamily: MONO }}>
-          <span className="w-1.5 h-1.5 rounded-full" style={{ background: A }} />
-          reasoning trees for AI agents
-          <ChevronRight size={13} className="text-white/30" />
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="inline-flex items-center gap-2 rounded-full border border-[#2e2e2e] bg-[#171717] px-3 py-1 text-[11px] tracking-[0.12em] uppercase text-[#8f8f8f] mb-7" style={{ fontFamily: MONO }}>
+          <span className="w-1.5 h-1.5 rounded-full bg-[#8f8f8f]" />
+          reasoning trees for AI CLIs
         </motion.div>
 
         <BlurIn
-          text="AI reasoning that vanishes the moment you see the answer."
-          className="font-bold leading-[1.05] tracking-[-0.03em] text-[#F4F8FB] mb-6 max-w-[780px]"
-          accentFrom={3}
+          text="See how your AI actually reasoned."
+          className="font-semibold text-[clamp(36px,6vw,64px)] leading-[1.05] tracking-[-0.03em] text-[#ededed] mb-6 max-w-[780px]"
         />
-        <p className="text-[18px] text-white/50 leading-[1.7] max-w-[560px] mb-10">
-          Branch captures every step. Navigate the tree. Fork from any node.
-          Diff two runs. Finally understand <em className="not-italic font-medium" style={{ color: A2 }}>why</em> the answer changed.
+        <p className="text-[18px] text-[#8f8f8f] leading-[1.7] max-w-[600px] mb-10">
+          Branch captures the extended thinking behind every answer from Claude Code, Codex, Gemini, and Droid —
+          as a tree you can navigate, fork from any node, and diff across runs.
         </p>
 
-        <div className="flex items-center gap-5 flex-wrap mb-16">
-          <div className="flex items-center gap-3 bg-white/[0.03] border border-white/10 rounded-[8px] px-4 py-3 transition-colors hover:border-[#38BDF8]/40">
-            <code style={{ fontFamily: MONO }} className="text-[14px] text-[#E6EDF3] tracking-[-0.01em]">npm install -g branch-ai</code>
-            <CopyBtn text="npm install -g branch-ai" />
-          </div>
+        <div className="flex items-center gap-5 flex-wrap mb-8">
+          <DemoButton />
+          <InstallSnippet />
         </div>
 
-        {/* Reasoning tree */}
+        {/* Proof strip */}
+        <div className="flex items-center gap-3 flex-wrap mb-16">
+          {BADGES.map((b) => (
+            <a key={b.src} href={b.href} target="_blank" rel="noopener noreferrer" className="inline-flex opacity-80 hover:opacity-100 transition-opacity">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={b.src} alt={b.alt} height={20} />
+            </a>
+          ))}
+        </div>
+
+        {/* Reasoning tree — signature element */}
         <motion.div {...reveal}>
-          <div className="relative bg-white/[0.02] border border-white/[0.08] rounded-[14px] px-8 py-7 max-w-[600px] overflow-hidden shadow-[0_30px_80px_-30px_rgba(0,0,0,0.7)]">
-            <div className="absolute top-0 left-0 right-0 h-px" style={{ background: `linear-gradient(90deg, ${A} 0%, transparent 60%)` }} />
-            <div style={{ fontFamily: MONO }} className="text-[11px] text-white/30 tracking-[0.08em] uppercase mb-4">// reasoning tree · live</div>
-            <pre style={{ fontFamily: MONO, whiteSpace: 'pre', margin: 0 }} className="text-[13px] leading-[1.9] text-white/45">
-              <span className="text-[#E6EDF3] font-medium">{'┌─ [root] How should I architect this?'}</span>{'\n'}
-              <span className="text-white/25">{'│'}</span>{'\n'}
-              <span className="text-white/25">{'│  ├─ '}</span>{'Option A: monolith'}{'\n'}
-              <span className="text-white/25">{'│  │'}</span>{'\n'}
-              <span className="text-white/25">{'│  │   └─ '}</span><span className="font-medium" style={{ color: A }}>{'[fork]'}</span>{' What if the team scales?'}{'\n'}
-              <span className="text-white/25">{'│  │         ├─ '}</span>{'introduce service boundaries early'}{'\n'}
-              <span className="text-white/25">{'│  │         └─ '}</span>{'refactor later (tech debt)'}{'\n'}
-              <span className="text-white/25">{'│  │'}</span>{'\n'}
-              <span className="text-white/25">{'│  └─ '}</span>{'Option B: services '}<span style={{ color: A2 }}>{'← you are here'}</span>{'\n'}
-              <span className="text-white/25">{'│        ├─ '}</span>{'define contracts first'}{'\n'}
-              <span className="text-white/25">{'│        └─ '}</span>{'deploy independently'}
+          <div className="relative bg-[#171717]/60 border border-[#2e2e2e] rounded-[12px] px-8 py-7 max-w-[600px] overflow-hidden shadow-[0_30px_80px_-30px_rgba(0,0,0,0.7)]">
+            <div style={{ fontFamily: MONO }} className="text-[11px] text-[#7d7d7d] tracking-[0.08em] uppercase mb-4">// reasoning tree · live</div>
+            <pre style={{ fontFamily: MONO, whiteSpace: 'pre', margin: 0 }} className="text-[13px] leading-[1.9] text-[#8f8f8f]">
+              <span className="text-[#ededed] font-medium">{'┌─ [root] How should I architect this?'}</span>{'\n'}
+              <span className="text-[#4d4d4d]">{'│'}</span>{'\n'}
+              <span className="text-[#4d4d4d]">{'│  ├─ '}</span>{'Option A: monolith'}{'\n'}
+              <span className="text-[#4d4d4d]">{'│  │'}</span>{'\n'}
+              <span className="text-[#4d4d4d]">{'│  │   └─ '}</span><span className="font-medium text-[#ededed]">{'[fork]'}</span>{' What if the team scales?'}{'\n'}
+              <span className="text-[#4d4d4d]">{'│  │         ├─ '}</span>{'introduce service boundaries early'}{'\n'}
+              <span className="text-[#4d4d4d]">{'│  │         └─ '}</span>{'refactor later (tech debt)'}{'\n'}
+              <span className="text-[#4d4d4d]">{'│  │'}</span>{'\n'}
+              <span className="text-[#4d4d4d]">{'│  └─ '}</span>{'Option B: services '}<span className="text-[#ededed]">{'← you are here'}</span>{'\n'}
+              <span className="text-[#4d4d4d]">{'│        ├─ '}</span>{'define contracts first'}{'\n'}
+              <span className="text-[#4d4d4d]">{'│        └─ '}</span>{'deploy independently'}
             </pre>
           </div>
         </motion.div>
       </section>
 
       {/* Problem */}
-      <section id="problem" className="py-[80px] border-y border-white/[0.06]">
+      <section id="problem" className="py-[80px] border-y border-[#2e2e2e]/60">
         <motion.div {...reveal} className="max-w-[920px] mx-auto px-8">
-          <h2 style={{ fontFamily: DISPLAY, fontSize: 'clamp(24px, 3.5vw, 36px)' }} className="font-bold leading-[1.15] tracking-[-0.03em] text-[#F4F8FB] mb-5">
-            Reasoning that vanishes<br />the moment you see the answer.
+          <h2 style={{ fontFamily: DISPLAY, fontSize: 'clamp(24px, 3.5vw, 36px)' }} className="font-semibold leading-[1.15] tracking-[-0.03em] text-[#ededed] mb-5">
+            The answer arrives.<br />The thinking is already gone.
           </h2>
-          <p className="text-[18px] text-white/50 leading-[1.7] max-w-[620px] border-l-2 pl-6" style={{ borderColor: `${A}66` }}>
+          <p className="text-[18px] text-[#8f8f8f] leading-[1.7] max-w-[620px] border-l-2 border-[#2e2e2e] pl-6">
             When an AI works through a hard problem, the reasoning disappears the moment you read the output.
-            You got a wall of text you can&apos;t trace.{' '}
-            <strong className="text-[#E6EDF3] font-medium">If the answer is wrong, you start over. If it&apos;s right, you don&apos;t know why.</strong>
+            You get a wall of text you can&apos;t trace.{' '}
+            <strong className="text-[#ededed] font-medium">If the answer is wrong, you start over. If it&apos;s right, you don&apos;t know why.</strong>
           </p>
         </motion.div>
       </section>
 
       {/* Features */}
-      <section id="features" className="py-[80px] border-b border-white/[0.06]">
+      <section id="features" className="py-[80px] border-b border-[#2e2e2e]/60">
         <div className="max-w-[920px] mx-auto px-8">
-          <motion.h2 {...reveal} style={{ fontFamily: DISPLAY, fontSize: 'clamp(24px, 3.5vw, 36px)' }} className="font-bold leading-[1.15] tracking-[-0.03em] text-[#F4F8FB] mb-12">
+          <motion.h2 {...reveal} style={{ fontFamily: DISPLAY, fontSize: 'clamp(24px, 3.5vw, 36px)' }} className="font-semibold leading-[1.15] tracking-[-0.03em] text-[#ededed] mb-12">
             Every step. Inspectable.<br />Forkable. Comparable.
           </motion.h2>
           <div className="grid gap-4" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))' }}>
@@ -209,14 +241,13 @@ export default function BranchAILanding() {
               const Icon = f.icon;
               return (
                 <motion.div key={f.num} {...reveal} transition={{ ...reveal.transition, delay: i * 0.08 }}>
-                  <div className="group relative h-full bg-white/[0.02] border border-white/[0.08] rounded-[14px] p-7 transition-all hover:-translate-y-1 overflow-hidden" style={{ ['--a' as string]: A }}>
-                    <div className="absolute inset-x-0 top-0 h-px opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: `linear-gradient(90deg, transparent, ${A}, transparent)` }} />
-                    <span className="grid place-items-center w-9 h-9 rounded-lg border border-white/[0.08] mb-4" style={{ background: `${A}1a`, color: A }}>
+                  <div className="group relative h-full bg-[#171717]/60 border border-[#2e2e2e] rounded-[12px] p-7 transition-all hover:-translate-y-1 hover:border-[#4d4d4d] overflow-hidden">
+                    <span className="grid place-items-center w-9 h-9 rounded-[6px] border border-[#2e2e2e] bg-[#171717] text-[#ededed] mb-4">
                       <Icon size={16} />
                     </span>
-                    <div style={{ fontFamily: MONO }} className="text-[11px] text-white/30 tracking-[0.08em] mb-1.5">{f.num}</div>
-                    <div style={{ fontFamily: DISPLAY, color: A }} className="text-[19px] font-semibold mb-2.5 tracking-[-0.02em]">{f.name}</div>
-                    <p className="text-[14px] text-white/45 leading-[1.6]">{f.desc}</p>
+                    <div style={{ fontFamily: MONO }} className="text-[11px] text-[#7d7d7d] tracking-[0.08em] mb-1.5">{f.num}</div>
+                    <div style={{ fontFamily: DISPLAY }} className="text-[19px] font-semibold mb-2.5 tracking-[-0.02em] text-[#ededed]">{f.name}</div>
+                    <p className="text-[14px] text-[#8f8f8f] leading-[1.6]">{f.desc}</p>
                   </div>
                 </motion.div>
               );
@@ -226,32 +257,32 @@ export default function BranchAILanding() {
       </section>
 
       {/* Supported CLIs */}
-      <section className="py-[80px] border-b border-white/[0.06]">
+      <section className="py-[80px] border-b border-[#2e2e2e]/60">
         <motion.div {...reveal} className="max-w-[920px] mx-auto px-8">
-          <h2 style={{ fontFamily: DISPLAY, fontSize: 'clamp(22px, 2.8vw, 30px)' }} className="font-bold tracking-[-0.03em] text-[#F4F8FB] mb-8">Works where you already work.</h2>
+          <h2 style={{ fontFamily: DISPLAY, fontSize: 'clamp(22px, 2.8vw, 30px)' }} className="font-semibold tracking-[-0.03em] text-[#ededed] mb-8">Works where you already work.</h2>
           <div className="flex flex-wrap gap-3 mb-6">
             {CLI_CHIPS.map((cli) => (
-              <div key={cli} style={{ fontFamily: MONO }} className="text-[13px] text-white/55 bg-white/[0.03] border border-white/10 rounded-[8px] px-4 py-2 hover:border-[#38BDF8]/40 hover:text-white transition-colors">{cli}</div>
+              <div key={cli} style={{ fontFamily: MONO }} className="text-[13px] text-[#8f8f8f] bg-[#171717] border border-[#2e2e2e] rounded-[6px] px-4 py-2 hover:border-[#4d4d4d] hover:text-[#ededed] transition-colors">{cli}</div>
             ))}
           </div>
-          <p style={{ fontFamily: MONO }} className="text-[13px] text-white/30">
-            Uses your existing CLI auth. <span style={{ color: A }}>No API keys needed.</span>
+          <p style={{ fontFamily: MONO }} className="text-[13px] text-[#7d7d7d]">
+            Uses your existing CLI auth. <span className="text-[#ededed]">No API keys needed.</span>
           </p>
         </motion.div>
       </section>
 
       {/* Three ways */}
-      <section className="py-[80px] border-b border-white/[0.06]">
+      <section className="py-[80px] border-b border-[#2e2e2e]/60">
         <div className="max-w-[920px] mx-auto px-8">
-          <motion.h2 {...reveal} style={{ fontFamily: DISPLAY, fontSize: 'clamp(22px, 2.8vw, 30px)' }} className="font-bold tracking-[-0.03em] text-[#F4F8FB] mb-10">Terminal. Agent. Team.</motion.h2>
+          <motion.h2 {...reveal} style={{ fontFamily: DISPLAY, fontSize: 'clamp(22px, 2.8vw, 30px)' }} className="font-semibold tracking-[-0.03em] text-[#ededed] mb-10">Terminal. Agent. Team.</motion.h2>
           <div className="flex flex-col">
             {WAYS.map((way, i) => (
               <motion.div key={way.tag} {...reveal} transition={{ ...reveal.transition, delay: i * 0.06 }}>
-                <div className={`flex items-start gap-5 bg-white/[0.02] border border-white/[0.08] px-6 py-5 hover:bg-white/[0.04] transition-colors ${i === 0 ? 'rounded-t-[8px]' : i === WAYS.length - 1 ? 'rounded-b-[8px] border-t-0' : 'border-t-0'}`}>
-                  <span style={{ fontFamily: MONO, background: `${A}1a`, border: `1px solid ${A}33`, color: A }} className="text-[11px] rounded px-2.5 py-0.5 whitespace-nowrap shrink-0 mt-0.5 tracking-[0.04em] uppercase">{way.tag}</span>
+                <div className={`flex items-start gap-5 bg-[#171717]/60 border border-[#2e2e2e] px-6 py-5 hover:bg-[#171717] transition-colors ${i === 0 ? 'rounded-t-[6px]' : i === WAYS.length - 1 ? 'rounded-b-[6px] border-t-0' : 'border-t-0'}`}>
+                  <span style={{ fontFamily: MONO }} className="text-[11px] rounded-[6px] px-2.5 py-0.5 whitespace-nowrap shrink-0 mt-0.5 tracking-[0.04em] uppercase bg-[#171717] border border-[#2e2e2e] text-[#8f8f8f]">{way.tag}</span>
                   <div>
-                    <div style={{ fontFamily: MONO }} className="text-[14px] text-[#E6EDF3] font-medium mb-1">{way.title}</div>
-                    <p className="text-[13px] text-white/45">{way.desc}</p>
+                    <div style={{ fontFamily: MONO }} className="text-[14px] text-[#ededed] font-medium mb-1">{way.title}</div>
+                    <p className="text-[13px] text-[#8f8f8f]">{way.desc}</p>
                   </div>
                 </div>
               </motion.div>
@@ -261,20 +292,20 @@ export default function BranchAILanding() {
       </section>
 
       {/* Install */}
-      <section id="install" className="py-[80px] border-b border-white/[0.06]">
+      <section id="install" className="py-[80px] border-b border-[#2e2e2e]/60">
         <div className="max-w-[920px] mx-auto px-8">
-          <motion.h2 {...reveal} style={{ fontFamily: DISPLAY, fontSize: 'clamp(22px, 2.8vw, 30px)' }} className="font-bold tracking-[-0.03em] text-[#F4F8FB] mb-10">Three lines to get started.</motion.h2>
+          <motion.h2 {...reveal} style={{ fontFamily: DISPLAY, fontSize: 'clamp(22px, 2.8vw, 30px)' }} className="font-semibold tracking-[-0.03em] text-[#ededed] mb-10">Three lines to get started.</motion.h2>
           <motion.div {...reveal}>
-            <div className="bg-[#070B0F] border border-white/[0.08] rounded-[14px] overflow-hidden shadow-[0_30px_80px_-30px_rgba(0,0,0,0.7)]">
-              <div className="bg-white/[0.03] border-b border-white/[0.06] px-4 py-2.5 flex items-center gap-2">
-                <div className="w-2.5 h-2.5 rounded-full bg-[#FF5F57]" />
-                <div className="w-2.5 h-2.5 rounded-full bg-[#FFBD2E]" />
-                <div className="w-2.5 h-2.5 rounded-full bg-[#28CA41]" />
+            <div className="bg-[#171717] border border-[#2e2e2e] rounded-[12px] overflow-hidden shadow-[0_30px_80px_-30px_rgba(0,0,0,0.7)]">
+              <div className="bg-[#0a0a0a]/40 border-b border-[#2e2e2e] px-4 py-2.5 flex items-center gap-2">
+                <div className="w-2.5 h-2.5 rounded-full bg-[#2e2e2e]" />
+                <div className="w-2.5 h-2.5 rounded-full bg-[#2e2e2e]" />
+                <div className="w-2.5 h-2.5 rounded-full bg-[#2e2e2e]" />
               </div>
               <div style={{ fontFamily: MONO }} className="px-8 py-7 text-[14px] leading-[2]">
                 {TERMINAL_LINES.map((parts, i) => (
                   <div key={i} className="flex items-start gap-3">
-                    <span className="select-none" style={{ color: A }}>$</span>
+                    <span className="select-none text-[#7d7d7d]">$</span>
                     <span>{parts.map((p, j) => (<span key={j} style={{ color: p.color }}>{p.text}</span>))}</span>
                   </div>
                 ))}
@@ -284,18 +315,36 @@ export default function BranchAILanding() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="py-12 border-t border-white/[0.06]">
-        <div className="max-w-[920px] mx-auto px-8 flex items-center justify-between flex-wrap gap-4">
-          <div style={{ fontFamily: MONO }} className="text-[13px] text-white/30">
-            <span style={{ color: A }}>branch</span> ai
+      {/* Closing CTA */}
+      <section className="py-[96px] border-b border-[#2e2e2e]/60">
+        <motion.div {...reveal} className="max-w-[920px] mx-auto px-8 text-center">
+          <h2 style={{ fontFamily: DISPLAY, fontSize: 'clamp(24px, 3.5vw, 36px)' }} className="font-semibold leading-[1.15] tracking-[-0.03em] text-[#ededed] mb-4">
+            Stop guessing why the answer changed.
+          </h2>
+          <p className="text-[16px] text-[#8f8f8f] leading-[1.7] max-w-[520px] mx-auto mb-10">
+            Open a real reasoning tree in the live demo, or install the CLI and capture your own.
+          </p>
+          <div className="flex items-center justify-center gap-5 flex-wrap">
+            <DemoButton />
+            <InstallSnippet />
           </div>
-          <ul className="flex gap-6 list-none">
-            <li><a href="https://github.com/nikolas-sapa/branch-ai" style={{ fontFamily: MONO }} className="text-[12px] text-white/30 hover:text-white transition-colors">GitHub ↗</a></li>
-            <li><span style={{ fontFamily: MONO }} className="text-[11px] text-white/30 rounded px-2.5 py-0.5 bg-white/[0.03] border border-white/10">MIT</span></li>
+        </motion.div>
+      </section>
+
+      {/* Footer */}
+      <footer className="py-12">
+        <div className="max-w-[920px] mx-auto px-8 flex items-center justify-between flex-wrap gap-4">
+          <div style={{ fontFamily: MONO }} className="text-[13px] text-[#7d7d7d]">
+            branch ai
+          </div>
+          <ul className="flex gap-6 list-none items-center">
+            <li><a href={GITHUB_URL} style={{ fontFamily: MONO }} className="text-[12px] text-[#8f8f8f] hover:text-[#ededed] transition-colors">GitHub ↗</a></li>
+            <li><a href={NPM_URL} style={{ fontFamily: MONO }} className="text-[12px] text-[#8f8f8f] hover:text-[#ededed] transition-colors">npm ↗</a></li>
+            <li><span style={{ fontFamily: MONO }} className="text-[11px] text-[#7d7d7d] rounded-[6px] px-2.5 py-0.5 bg-[#171717] border border-[#2e2e2e]">MIT</span></li>
           </ul>
         </div>
       </footer>
     </div>
+    </MotionConfig>
   );
 }
