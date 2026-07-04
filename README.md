@@ -8,6 +8,51 @@
 
 ![Branch viewer screenshot](https://raw.githubusercontent.com/84yk8btb9f-prog/branch-ai/main/assets/viewer.png)
 
+## What is Branch AI?
+
+**Branch is a reasoning canvas for AI CLIs that captures the extended thinking from Claude Code, OpenAI Codex, Gemini CLI, and Factory Droid as a navigable, forkable tree.** Instead of watching reasoning scroll past in your terminal and vanish, Branch turns it into a tree you can rewind, fork from any step, and edit mid-thought.
+
+### Why Branch
+
+Terminal output is a transcript — you read it once and it's gone. Branch keeps the reasoning as structure. From any node you can fork an alternative path, inject a new fact and re-reason from that point, or record *why* you decided what you decided and what would change the answer later. It works with four AI CLIs, runs fully local by default, and ships an MCP server so agents can externalize their own reasoning.
+
+### Branch vs. the alternatives
+
+| | Branch | Scrolling terminal output | LLM tracing (LangSmith, Langfuse) | Chat/session loggers |
+|---|---|---|---|---|
+| Captures reasoning as a navigable tree | Yes | No (linear text) | Spans/timeline, not forkable | Messages only, not reasoning steps |
+| Fork from any step / explore alternatives | Yes | No | No | No |
+| Inject a fact mid-thought and re-reason | Yes | No | No | No |
+| Built for interactive CLI use (no app instrumentation) | Yes | n/a | No — for apps you build | Varies |
+| Local-first, no API key required | Yes | Yes | No (hosted) | Varies |
+
+Honest scope: if you need production tracing across a deployed agent app with dashboards and eval runs, use LangSmith/Langfuse — that's what they're for. Branch is for the interactive loop: one developer, one hard question, at the CLI, wanting to see and steer the reasoning.
+
+### When to use Branch
+
+- You're working a hard decision through Claude Code / Codex / Gemini and want to see *how* it got there, not just the answer.
+- You want to explore "what if I changed this assumption?" without re-running the whole prompt from scratch.
+- You want to record a decision — what you picked, what you rejected, and what would make you revisit it.
+- You want your Claude Code agent to externalize and fork its own reasoning via MCP.
+- You want to compare or merge the reasoning from two different runs or two different models.
+
+### FAQ
+
+**Does Branch need an API key?**
+No. Branch uses your existing CLI auth (Claude Code, Codex, Gemini, or Droid). It never asks for its own API key.
+
+**Which AI CLIs does it support?**
+Claude Code (richest reasoning capture), OpenAI Codex CLI, Google Gemini CLI, and Factory Droid. Run `branch doctor` to see which are on your PATH.
+
+**Is my reasoning uploaded anywhere?**
+No, unless you opt in. Sessions save to `~/.branch/sessions/` on your machine. Sharing is per-session and explicit (`branch share <id>`).
+
+**What's the MCP server for?**
+`branch-mcp` gives Claude Code 13 tools so an agent can externalize its reasoning as a tree, fork it, inject facts, diff/merge runs, and record decisions — from inside a session.
+
+**Does it capture everything the model "thinks"?**
+No. It captures the *surfaced* reasoning steps when extended thinking is on. Token-level cognition is never exposed by any API — Branch captures what the model narrates, not everything it computes.
+
 ## Supported CLIs
 
 - **Claude Code** — full thinking-block capture (richest reasoning)
