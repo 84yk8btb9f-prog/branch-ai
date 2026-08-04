@@ -140,7 +140,7 @@ export default function Home() {
             </Link>
             {!local && (
               <a
-                href="https://github.com/84yk8btb9f-prog/branch-ai#install"
+                href="https://github.com/nikolas-sapa/branch-ai#install"
                 target="_blank"
                 rel="noreferrer"
                 className="text-xs text-neutral-400 hover:text-neutral-700 transition-colors"

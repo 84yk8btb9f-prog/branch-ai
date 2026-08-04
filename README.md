@@ -11,7 +11,7 @@
 
 > **Why this exists.** When an AI works through a hard problem, the reasoning vanishes the moment you see the answer. Branch preserves every reasoning step, lets you rewind to any point, and explore "what if I changed this assumption?" — without starting over.
 
-![Branch viewer screenshot](https://raw.githubusercontent.com/84yk8btb9f-prog/branch-ai/main/assets/viewer.png)
+![Branch viewer screenshot](https://raw.githubusercontent.com/nikolas-sapa/branch-ai/main/assets/viewer.png)
 
 ## What is Branch AI?
 
@@ -95,7 +95,7 @@ npm install -g branch-ai
 
 ```bash
 # Terminal 1 — start the viewer
-git clone https://github.com/84yk8btb9f-prog/branch-ai && cd branch-ai
+git clone https://github.com/nikolas-sapa/branch-ai && cd branch-ai
 npm run viewer
 # viewer runs on http://localhost:7432
 
