@@ -24,10 +24,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/84yk8btb9f-prog/branch-ai.git"
+    "url": "git+https://github.com/nikolas-sapa/branch-ai.git"
   },
-  "bugs": "https://github.com/84yk8btb9f-prog/branch-ai/issues",
-  "homepage": "https://github.com/84yk8btb9f-prog/branch-ai#readme",
+  "bugs": "https://github.com/nikolas-sapa/branch-ai/issues",
+  "homepage": "https://github.com/nikolas-sapa/branch-ai#readme",
   "keywords": [
     "claude",
     "claude-code",

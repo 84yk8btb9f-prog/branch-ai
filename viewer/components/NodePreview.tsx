@@ -66,7 +66,7 @@ export function NodePreview({ content, onFork, onInject, onClose }: NodePreviewP
                 Install Branch to fork reasoning from any node and add facts mid-thought.
               </div>
               <a
-                href="https://github.com/84yk8btb9f-prog/branch-ai#install"
+                href="https://github.com/nikolas-sapa/branch-ai#install"
                 target="_blank"
                 rel="noreferrer"
                 className="inline-block px-3 py-1.5 rounded bg-neutral-900 text-white text-xs font-medium hover:bg-neutral-800 transition-colors"

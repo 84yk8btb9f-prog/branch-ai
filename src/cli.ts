@@ -585,7 +585,7 @@ async function runDefault(args: string[]) {
     if (viewerDir) reachable = await startViewer(viewerDir, VIEWER_URL);
   }
   if (!reachable) {
-    console.log(`\n(Viewer isn't running and couldn't auto-start. Start manually: git clone https://github.com/84yk8btb9f-prog/branch-ai && cd branch-ai && npm run viewer)`);
+    console.log(`\n(Viewer isn't running and couldn't auto-start. Start manually: git clone https://github.com/nikolas-sapa/branch-ai && cd branch-ai && npm run viewer)`);
   } else if (!skipOpen) {
     openInBrowser(url);
   }
