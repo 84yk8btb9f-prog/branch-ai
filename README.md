@@ -1,5 +1,10 @@
 # branch-ai
 
+[![npm version](https://img.shields.io/npm/v/branch-ai?style=flat-square&color=F3F2EE&labelColor=0B0B0D)](https://www.npmjs.com/package/branch-ai)
+[![license](https://img.shields.io/badge/license-MIT-F3F2EE?style=flat-square&labelColor=0B0B0D)](LICENSE)
+[![node](https://img.shields.io/badge/node-%3E%3D20-F3F2EE?style=flat-square&labelColor=0B0B0D)](package.json)
+[![PRs welcome](https://img.shields.io/badge/PRs-welcome-F3F2EE?style=flat-square&labelColor=0B0B0D)](CONTRIBUTING.md)
+
 **The reasoning canvas for any AI CLI.** Works with Claude Code, OpenAI Codex, Google Gemini, or Factory.ai Droid — captures each tool's reasoning as a navigable, forkable tree. Walk backward through the thinking, explore alternative paths from any point, or add a new fact mid-thought and watch how the conclusion changes.
 
 **See it live:** Try the [public demo](https://branchai-fawn.vercel.app) — view real reasoning trees. To create your own and fork them, install locally below.
@@ -286,8 +291,11 @@ The viewer uses Yjs awareness over a tiny WebSocket server (no auth, no persiste
 
 ## Contributing
 
-PRs welcome. Please run `npm test` before submitting.
+PRs welcome, especially new AI CLI adapters. See [CONTRIBUTING.md](CONTRIBUTING.md)
+for dev setup, repo layout, and how to add a new adapter. Please run `npm test`
+before submitting. See also [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) and
+[SECURITY.md](SECURITY.md) for vulnerability reports.
 
 ## License
 
-MIT © Nikolas Sapalidis
+MIT © Nikolas Sapalidis — see [LICENSE](LICENSE).
